@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { SyntheticEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { useStore } from "../../../app/stores/store";
 
@@ -27,7 +28,9 @@ function ActivityList() {
         {activities.map((activity) => (
           <Item key={activity.id}>
             <Item.Content>
-              <Item.Header as="a">{activity.title}</Item.Header>
+              <Item.Header as="a" href={`activities/${activity.id}`}>
+                {activity.title}
+              </Item.Header>
               <Item.Meta>{activity.date}</Item.Meta>
               <Item.Description>
                 <div>{activity.description}</div>
@@ -49,7 +52,8 @@ function ActivityList() {
                   floated="right"
                   content="View"
                   color="blue"
-                  onClick={() => activityStore.selectActivity(activity.id)}
+                  as={Link}
+                  to={`/activities/${activity.id}`}
                 />
                 <Label basic content={activity.category} />
               </Item.Extra>
