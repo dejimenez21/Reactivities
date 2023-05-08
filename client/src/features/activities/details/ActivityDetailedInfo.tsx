@@ -4,7 +4,7 @@ import { Segment, Grid, Icon } from "semantic-ui-react";
 import { Activity } from "../../../app/models/activity";
 
 interface Props {
-  activity: Activity;
+  activity: Activity | undefined;
 }
 
 export default observer(function ActivityDetailedInfo({ activity }: Props) {
@@ -16,7 +16,7 @@ export default observer(function ActivityDetailedInfo({ activity }: Props) {
             <Icon size="large" color="teal" name="info" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <p>{activity.description}</p>
+            <p>{activity?.description}</p>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -26,7 +26,7 @@ export default observer(function ActivityDetailedInfo({ activity }: Props) {
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>{activity.date}</span>
+            <span>{activity?.date}</span>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -37,7 +37,7 @@ export default observer(function ActivityDetailedInfo({ activity }: Props) {
           </Grid.Column>
           <Grid.Column width={11}>
             <span>
-              {activity.venue}, {activity.city}
+              {activity?.venue}, {activity?.city}
             </span>
           </Grid.Column>
         </Grid>

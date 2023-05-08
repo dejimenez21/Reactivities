@@ -24,7 +24,7 @@ function ActivityDetails() {
     <Grid>
       <Grid.Column width={10}>
         <ActivityDetailedHeader activity={activity} />
-        <ActivityDetailedInfo activity={activity!} />
+        <ActivityDetailedInfo activity={activity} />
         <ActivityDetailedChat />
       </Grid.Column>
       <Grid.Column width={6}>
