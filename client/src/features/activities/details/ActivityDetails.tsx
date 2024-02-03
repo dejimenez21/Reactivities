@@ -13,13 +13,13 @@ function ActivityDetails() {
   const { activityStore } = useStore();
   const { selectedActivity: activity, loadActivity, loadingInitial } = activityStore;
   const { id } = useParams();
-
+  
   useEffect(() => {
     if (id) loadActivity(id);
   }, [id, loadActivity]);
 
-  if (loadingInitial) return <LoadingComponent />;
-
+  if (loadingInitial || !activity) return <LoadingComponent />;
+  
   return (
     <Grid>
       <Grid.Column width={10}>

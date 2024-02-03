@@ -9,7 +9,7 @@ interface Props {
     label?: string;
 }
 
-export default function MyDateInput(props: ReactDatePickerProps) {
+export default function MyDateInput(props: Partial<ReactDatePickerProps>) {
     const [field, meta, helpers] = useField(props.name!);
 
     return (

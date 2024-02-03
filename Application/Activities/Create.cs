@@ -39,7 +39,7 @@ namespace Application.Activities
 
                 var result = await _context.SaveChangesAsync() > 0;
 
-                return result ? Result<Unit>.Failure("Failed to create activity") : Result<Unit>.Success(Unit.Value);
+                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to create activity");
             }
         }
     }
