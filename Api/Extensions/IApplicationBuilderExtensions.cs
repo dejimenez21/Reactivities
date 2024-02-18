@@ -1,3 +1,6 @@
+using Identity;
+using Identity.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -9,7 +12,7 @@ public static class IApplicationBuilderExtensions
     /// Creates or updates the database to the last migration before runing the application.
     /// </summary>
     /// <param name="app"></param>
-    public static void InitializeDatabase(this IApplicationBuilder app)
+    public static async Task InitializeDatabase(this IApplicationBuilder app)
     {
         using var scopedServices = app.ApplicationServices.CreateScope();
 
@@ -17,7 +20,10 @@ public static class IApplicationBuilderExtensions
         {
             var context = scopedServices.ServiceProvider.GetRequiredService<AppDbContext>();
             context.Database.Migrate();
-            Seed.SeedData(context);
+            var identityContext = scopedServices.ServiceProvider.GetRequiredService<IdentityContext>();
+            identityContext.Database.Migrate();
+            var userManager = scopedServices.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            await Seed.SeedData(context, userManager);
         }
         catch(Exception ex)
         {

@@ -1,12 +1,22 @@
 using Api.Extensions;
 using Api.Middlewares;
+using Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddControllers(options =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
+builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
+
+builder.Services.ConfigureIdentity(builder.Configuration, builder.Environment.EnvironmentName);
+builder.Services.ConfigureAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -24,10 +34,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("CorsPolicy");
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.InitializeDatabase();
+await app.InitializeDatabase();
 
 app.Run();

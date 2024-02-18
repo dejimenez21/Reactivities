@@ -1,16 +1,20 @@
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence
+namespace Persistence;
+
+public class AppDbContext : DbContext
 {
-    public class AppDbContext : DbContext
+    public DbSet<Activity> Activities { get; set; }
+
+    
+
+    #pragma warning disable CS8618
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<Activity> Activities { get; set; }
-
-        
-
-        #pragma warning disable CS8618
-        public AppDbContext(DbContextOptions options) : base(options) {}
-
+        base.OnModelCreating(modelBuilder);
     }
+
 }
