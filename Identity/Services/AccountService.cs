@@ -1,6 +1,8 @@
-﻿using DDD.Foundation.Results;
+﻿using Application.IntegrationEvents.Users.Created;
+using DDD.Foundation.Results;
 using Identity.DTOs;
 using Identity.Model;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,18 +12,22 @@ public class AccountService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly TokenService _tokenService;
+    private readonly IPublisher _publisher;
 
-    public AccountService(UserManager<ApplicationUser> userManager, TokenService tokenService)
+    public AccountService(UserManager<ApplicationUser> userManager, TokenService tokenService, IPublisher publisher)
     {
         _userManager = userManager;
         _tokenService = tokenService;
+        _publisher = publisher;
     }
 
     public async Task<Result<UserDto>> RegisterNewUser(RegisterDto registerDto)
     {
         if (await _userManager.Users.AnyAsync(u => u.UserName == registerDto.Username))
         {
-            return new Error(400, "username.already.taken", "Username is already taken");
+            var error = new Error(400, "register.user.validation", "One or more validation errors occurred");
+            error.Reasons.Add(new(400, "username", "Username is already taken"));
+            return error;
         }
 
         var user = new ApplicationUser
@@ -31,15 +37,18 @@ public class AccountService
             UserName = registerDto.Username
         };
 
-        var result = await _userManager.CreateAsync(user, registerDto.Password);
+        var identityResult = await _userManager.CreateAsync(user, registerDto.Password);
 
-        if (!result.Succeeded)
+        if (!identityResult.Succeeded)
         {
-            return new Error(400, "register.user.failed", result.Errors.FirstOrDefault()?.Description ?? "Problem registering user");
+            var error = new Error(400, "register.user.validation", "One or more validation errors occurred");
+            error.Reasons.Add(new(400, "credentials", identityResult.Errors.FirstOrDefault()?.Description ?? "Problem occurred with credentials"));
+            return error;
         }
 
-        return new UserDto(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
+        await _publisher.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.Bio, user.DisplayName));
 
+        return new UserDto(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
     }
 
     public async Task<Result<UserDto>> Login(LoginDto loginDto)
@@ -47,16 +56,21 @@ public class AccountService
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
         {
-            return new Error(401, "invalid.credentials", "Incorrect email or password");
+            return InvalidCredentialsError();
         }
 
         var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
         if (result == false)
         {
-            return new Error(401, "invalid.credentials", "Incorrect email or password");
+            return InvalidCredentialsError();
         }
 
         return new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), null);
+    }
+
+    private Result<UserDto> InvalidCredentialsError()
+    {
+        return new Error(401, "invalid.credentials", "Invalid email or password");
     }
 
     public async Task<UserDto?> GetUserByEmail(string email)

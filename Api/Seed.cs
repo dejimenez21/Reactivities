@@ -1,12 +1,14 @@
+using Application.IntegrationEvents.Users.Created;
 using Domain;
 using Identity.Model;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Persistence;
 
 namespace Api;
 public class Seed
 {
-    public static async Task SeedData(AppDbContext context, UserManager<ApplicationUser> userManager)
+    public static async Task SeedData(AppDbContext context, UserManager<ApplicationUser> userManager, IPublisher publisher)
     {
         if(!userManager.Users.Any())
         {
@@ -19,7 +21,11 @@ public class Seed
 
             foreach (var user in users)
             {
-                await userManager.CreateAsync(user, "Passw0rd");
+                var result = await userManager.CreateAsync(user, "Passw0rd");
+                if (result.Succeeded)
+                {
+                    await publisher.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.Bio, user.DisplayName));
+                }
             }
         }
 

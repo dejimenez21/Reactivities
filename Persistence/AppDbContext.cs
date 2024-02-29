@@ -6,10 +6,10 @@ namespace Persistence;
 public class AppDbContext : DbContext
 {
     public DbSet<Activity> Activities { get; set; }
+    public DbSet<AppUser> AppUsers { get; set; }
 
-    
 
-    #pragma warning disable CS8618
+#pragma warning disable CS8618
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

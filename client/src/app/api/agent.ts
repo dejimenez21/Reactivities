@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { Activity } from "../models/activity";
 import { router } from "../router/Routes";
 import { store } from "../stores/store";
+import { User, UserFormValues } from "../models/user";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -11,6 +12,14 @@ const sleep = (delay: number) => {
 };
 
 axios.defaults.baseURL = "http://localhost:5000/api";
+
+axios.interceptors.request.use(config => {
+  const token = store.commonStore.token;
+  if(token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 axios.interceptors.response.use(
   async (response) => {
@@ -29,7 +38,6 @@ axios.interceptors.response.use(
           for (const key in data.errors) {
             if (data.errors[key]) modelStateErrors.push(data.errors[key]);
           }
-
           throw modelStateErrors.flat();
         } else {
           toast.error(data);
@@ -50,7 +58,7 @@ axios.interceptors.response.use(
         break;
     }
 
-    return Promise.reject(error);
+    return Promise.reject(error.response?.data);
   }
 );
 
@@ -73,8 +81,15 @@ const Activities = {
   delete: (id: string) => requests.del(`/activities/${id}`),
 };
 
+const Account = {
+  current: () => requests.get<User>('/account'),
+  login: (user: UserFormValues) => requests.post<User>('/account/login', user),
+  register: (user: UserFormValues) => requests.post<User>('/account/register', user)
+}
+
 const agent = {
   Activities,
+  Account
 };
 
 export default agent;

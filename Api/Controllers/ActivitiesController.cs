@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[AllowAnonymous]
 public class ActivitiesController : BaseApiController
 {
     [HttpGet]

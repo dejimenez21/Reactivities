@@ -30,7 +30,13 @@ public class AccountController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        var result = await _accountService.RegisterNewUser(registerDto);       
+        var result = await _accountService.RegisterNewUser(registerDto); 
+        
+        if(result.IsFailed)
+        {
+            result.Error!.Reasons.ForEach(reason => ModelState.AddModelError("password", reason.Message));
+            return ValidationProblem();
+        }
 
         return result.IsSuccess ? result.Value : new ObjectResult(result.Error!.Message) { StatusCode = result.Error.StatusCode };
     }

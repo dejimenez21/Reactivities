@@ -1,5 +1,6 @@
 using Identity;
 using Identity.Model;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -23,7 +24,8 @@ public static class IApplicationBuilderExtensions
             var identityContext = scopedServices.ServiceProvider.GetRequiredService<IdentityContext>();
             identityContext.Database.Migrate();
             var userManager = scopedServices.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            await Seed.SeedData(context, userManager);
+            var publisher = scopedServices.ServiceProvider.GetRequiredService<IPublisher>();
+            await Seed.SeedData(context, userManager, publisher);
         }
         catch(Exception ex)
         {
