@@ -1,11 +1,9 @@
 using Application.Activities;
 using Domain;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-[AllowAnonymous]
 public class ActivitiesController : BaseApiController
 {
     [HttpGet]
@@ -31,12 +29,19 @@ public class ActivitiesController : BaseApiController
     public async Task<IActionResult> EditActivity(Guid id, Activity activity)
     {
         activity.Id = id;
-        return HandleResult(await Mediator.Send(new Edit.Command { Activity = activity }));
+        return HandleResult(await Mediator.Send(new Edit.Command { Activity = activity, ActivityId = id }));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteActivity(Guid id)
     {
-        return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+        return HandleResult(await Mediator.Send(new Delete.Command { ActivityId = id }));
     }
+
+    [HttpPost("{id}/attend")]
+    public async Task<IActionResult> Attend(Guid id)
+    {
+        return HandleResult(await Mediator.Send(new UpdateAttendance.Command { ActivityId = id }));
+    }
+
 }

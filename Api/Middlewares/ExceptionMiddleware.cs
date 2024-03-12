@@ -20,6 +20,11 @@ namespace Api.Middlewares
             {
                 await _next(context);
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);

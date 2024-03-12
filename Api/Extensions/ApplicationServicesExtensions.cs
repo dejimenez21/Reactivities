@@ -23,7 +23,7 @@ public static class ApplicationServicesExtensions
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<Create>();
-
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(IsHostAuthorizationBehavior<,>));
         return services;
     }
 

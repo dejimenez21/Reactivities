@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Core;
 using MediatR;
 using Persistence;
@@ -10,9 +6,9 @@ namespace Application.Activities
 {
     public class Delete
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IHostOnlyActivityCommand<Result<Unit>>
         {
-            public Guid Id { get; set; }
+            public Guid ActivityId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -24,7 +20,7 @@ namespace Application.Activities
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Id);
+                var activity = await _context.Activities.FindAsync(request.ActivityId);
 
                 if(activity == null) return null;
 

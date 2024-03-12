@@ -9,9 +9,10 @@ namespace Application.Activities
 {
     public class Edit
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IHostOnlyActivityCommand<Result<Unit>>
         {
             public Activity Activity { get; set; }
+            public Guid ActivityId { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>

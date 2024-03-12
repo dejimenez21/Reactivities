@@ -1,5 +1,7 @@
 using Api.Extensions;
 using Api.Middlewares;
+using Api.Services;
+using Application.Interfaces;
 using Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -17,6 +19,9 @@ builder.Services.AddApplicationServices(builder.Configuration, builder.Environme
 
 builder.Services.ConfigureIdentity(builder.Configuration, builder.Environment.EnvironmentName);
 builder.Services.ConfigureAuthentication(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 var app = builder.Build();
 
