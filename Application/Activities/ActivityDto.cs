@@ -13,5 +13,5 @@ public record ActivityDto
     public string Venue { get; set; }
     public string HostUsername { get; set; }
     public bool IsCanceled { get; set; }
-    public IEnumerable<Profile> Profiles { get; set; }
+    public IEnumerable<Profile> Attendees { get; set; }
 }

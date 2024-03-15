@@ -1,54 +1,56 @@
 using Application.Core;
 using Application.Interfaces;
+using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Activities
+namespace Application.Activities;
+
+public class Create
 {
-    public class Create
+    public class Command : IRequest<Result<ActivityDto>>
     {
-        public class Command : IRequest<Result<Unit>>
+        public Activity Activity { get; set; }
+    }
+
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
         {
-            public Activity Activity { get; set; }
+            RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
         }
+    }
 
-        public class CommandValidator : AbstractValidator<Command>
+    public class Handler : IRequestHandler<Command, Result<ActivityDto>>
+    {
+        private readonly AppDbContext _context;
+        private readonly IUserContext _userContext;
+        private readonly IMapper _mapper;
+
+        public Handler(AppDbContext context, IUserContext userContext, IMapper mapper)
         {
-            public CommandValidator()
-            {
-                RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
-            }
+            _context = context;
+            _userContext = userContext;
+            _mapper = mapper;
         }
-
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public async Task<Result<ActivityDto>> Handle(Command request, CancellationToken cancellationToken)
         {
-            private readonly AppDbContext _context;
-            private readonly IUserContext _userContext;
+            var user = await _context.AppUsers.FirstOrDefaultAsync(x => x.UserName == _userContext.UserName);
 
-            public Handler(AppDbContext context, IUserContext userContext)
+            request.Activity.Attendees.Add(new ActivityAttendee
             {
-                _context = context;
-                _userContext = userContext;
-            }
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
-            {
-                var user = await _context.AppUsers.FirstOrDefaultAsync(x => x.UserName == _userContext.UserName);
+                AppUser = user,
+                IsHost = true
+            });
 
-                request.Activity.Attendees.Add(new ActivityAttendee
-                {
-                    AppUser = user,
-                    IsHost = true
-                });
+            _context.Activities.Add(request.Activity);
 
-                _context.Activities.Add(request.Activity);
+            var result = await _context.SaveChangesAsync() > 0;
 
-                var result = await _context.SaveChangesAsync() > 0;
-
-                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to create activity");
-            }
+            return result ? Result<ActivityDto>.Success(_mapper.Map<ActivityDto>(request.Activity)) : Result<ActivityDto>.Failure("Failed to create activity");
         }
     }
 }

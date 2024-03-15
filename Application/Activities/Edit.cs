@@ -9,7 +9,7 @@ namespace Application.Activities
 {
     public class Edit
     {
-        public class Command : IHostOnlyActivityCommand<Result<Unit>>
+        public class Command : IHostOnlyActivityCommand<Result<ActivityDto>>
         {
             public Activity Activity { get; set; }
             public Guid ActivityId { get; set; }
@@ -23,7 +23,7 @@ namespace Application.Activities
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<ActivityDto>>
         {
             private readonly AppDbContext _context;
             private readonly IMapper _mapper;
@@ -33,17 +33,8 @@ namespace Application.Activities
                 _context = context;
                 _mapper = mapper;
             }
-            // public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
-            // {
-            //     _context.Activities.Update(request.Activity);
 
-            //     await _context.SaveChangesAsync();
-
-            //     return Unit.Value;
-            // }
-
-            //Using automapper for updating
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<ActivityDto>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var activity = await _context.Activities.FindAsync(request.Activity.Id);
 
@@ -53,7 +44,7 @@ namespace Application.Activities
 
                 var result = await _context.SaveChangesAsync() > 0;
 
-                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to update activity");
+                return result ? Result<ActivityDto>.Success(_mapper.Map<ActivityDto>(activity)) : Result<ActivityDto>.Failure("Failed to update activity");
             }
         }
     }
