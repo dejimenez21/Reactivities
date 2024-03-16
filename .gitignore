@@ -457,3 +457,4 @@ $RECYCLE.BIN/
 ## SQLite
 ##
 *.db-*
+/Api/appsettings.json
