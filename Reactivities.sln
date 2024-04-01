@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identity.csproj", "{AB51AC6D-CDE5-4C19-A9EC-84D6BD7467BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{5391BD41-5D1E-4C30-AF6C-DDDDACBFD926}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{AB51AC6D-CDE5-4C19-A9EC-84D6BD7467BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB51AC6D-CDE5-4C19-A9EC-84D6BD7467BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB51AC6D-CDE5-4C19-A9EC-84D6BD7467BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5391BD41-5D1E-4C30-AF6C-DDDDACBFD926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5391BD41-5D1E-4C30-AF6C-DDDDACBFD926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5391BD41-5D1E-4C30-AF6C-DDDDACBFD926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5391BD41-5D1E-4C30-AF6C-DDDDACBFD926}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
