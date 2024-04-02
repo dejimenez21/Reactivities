@@ -2,6 +2,7 @@
 using Identity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Persistence;
 using System.Security.Claims;
 
 namespace Api.Controllers;

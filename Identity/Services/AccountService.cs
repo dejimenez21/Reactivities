@@ -1,4 +1,5 @@
 ﻿using Application.IntegrationEvents.Users.Created;
+using Application.Photos;
 using DDD.Foundation.Results;
 using Identity.DTOs;
 using Identity.Model;
@@ -12,13 +13,13 @@ public class AccountService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly TokenService _tokenService;
-    private readonly IPublisher _publisher;
+    private readonly IMediator _mediator;
 
-    public AccountService(UserManager<ApplicationUser> userManager, TokenService tokenService, IPublisher publisher)
+    public AccountService(UserManager<ApplicationUser> userManager, TokenService tokenService, IMediator mediator)
     {
         _userManager = userManager;
         _tokenService = tokenService;
-        _publisher = publisher;
+        _mediator = mediator;
     }
 
     public async Task<Result<UserDto>> RegisterNewUser(RegisterDto registerDto)
@@ -46,7 +47,7 @@ public class AccountService
             return error;
         }
 
-        await _publisher.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.Bio, user.DisplayName));
+        await _mediator.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.Bio, user.DisplayName));
 
         return new UserDto(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
     }
@@ -65,7 +66,9 @@ public class AccountService
             return InvalidCredentialsError();
         }
 
-        return new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), null);
+        var image = await _mediator.Send(new GetMain.Query { Username = user.UserName! });
+
+        return new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), image);
     }
 
     private Result<UserDto> InvalidCredentialsError()
@@ -76,7 +79,10 @@ public class AccountService
     public async Task<UserDto?> GetUserByEmail(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        
-        return user is not null ? new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), null) : null;
+        if (user is null) return null;
+
+        var image = await _mediator.Send(new GetMain.Query { Username = user.UserName! });
+
+        return new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), image);
     }
 }
