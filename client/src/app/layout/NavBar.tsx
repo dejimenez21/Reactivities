@@ -30,7 +30,7 @@ function NavBar() {
           <Image src={user?.image || 'assets/user.png'} avatar spaced="right" />
           <Dropdown pointing="top left" text={user?.displayName}>
             <DropdownMenu>
-              <DropdownItem as={Link} to={`profile/${user?.username}`} content="My Profile" icon='user' />
+              <DropdownItem as={Link} to={`/profiles/${user?.username}`} content="My Profile" icon='user' />
               <DropdownItem onClick={logout} content="Logout" icon="power" />
             </DropdownMenu>
           </Dropdown>
