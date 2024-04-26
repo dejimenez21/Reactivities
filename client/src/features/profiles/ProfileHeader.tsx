@@ -8,17 +8,23 @@ import {
   Segment,
   Statistic,
 } from "semantic-ui-react";
+import { Profile } from "../../app/models/profile";
+import { observer } from "mobx-react-lite";
 
-const ProfileHeader = () => {
+interface Props {
+  profile: Profile;
+}
+
+const ProfileHeader = ({ profile }: Props) => {
   return (
     <Segment>
       <Grid>
         <Grid.Column width={12}>
           <Item.Group>
             <Item>
-              <Item.Image src={"/assets/user.png"} avatar size="small" />
+              <Item.Image src={profile?.image || "/assets/user.png"} avatar size="small" />
               <Item.Content verticalAlign="middle">
-                <Header as="h1">Displayname</Header>
+                <Header as="h1">{profile?.displayName}</Header>
               </Item.Content>
             </Item>
           </Item.Group>
@@ -48,4 +54,4 @@ const ProfileHeader = () => {
   );
 };
 
-export default ProfileHeader;
+export default observer(ProfileHeader);
