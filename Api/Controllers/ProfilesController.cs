@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-public class ProfileController : BaseApiController
+public class ProfilesController : BaseApiController
 {
     [HttpGet("{username}")]
     public async Task<IActionResult> GetProfile(string username)
