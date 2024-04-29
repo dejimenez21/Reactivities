@@ -23,7 +23,12 @@ namespace Application.Activities
 
             public async Task<Result<List<ActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activities = await _context.Activities.Include(a => a.Attendees).ThenInclude(a => a.AppUser).ToListAsync();
+                var activities = await _context.Activities
+                    .Include(a => a.Attendees)
+                    .ThenInclude(a => a.AppUser)
+                    .ThenInclude(a => a.Photos)
+                    .ToListAsync();
+
                 var activitiesDto = _mapper.Map<List<ActivityDto>>(activities);
                 return Result<List<ActivityDto>>.Success(activitiesDto);
             }

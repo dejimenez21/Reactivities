@@ -19,6 +19,8 @@ namespace Application.Core
                 .ForMember(p => p.Image, x => x.MapFrom(a => a.Photos.FirstOrDefault(p => p.IsMain) != null ? a.Photos.FirstOrDefault(p => p.IsMain).Url : null));
             CreateMap<AppUser, AttendeeDto>()
                 .ForMember(a => a.Image, x => x.MapFrom(a => a.Photos.FirstOrDefault(p => p.IsMain) != null ? a.Photos.FirstOrDefault(p => p.IsMain).Url : null));
+            CreateMap<ActivityAttendee, AttendeeDto>()
+                .IncludeMembers(a => a.AppUser);
         }
     }
 }
