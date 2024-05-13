@@ -42,6 +42,7 @@ export default class ProfileStore {
       runInAction(() => {
         this.profile!.displayName = about.displayName;
         this.profile!.bio = about.bio;
+        store.userStore.user!.displayName = about.displayName;
       })
     } catch (error) {
       console.log(error);

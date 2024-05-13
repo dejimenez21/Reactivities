@@ -30,7 +30,7 @@ const ProfileAbout = ({ profile }: Props) => {
           <Header
             floated="left"
             icon="user"
-            content={`About ${profile.displayName}`}
+            content={`About ${profile?.displayName}`}
           />
           {isCurrentUser &&
             (editMode ? (
@@ -54,7 +54,7 @@ const ProfileAbout = ({ profile }: Props) => {
               onFormSubmit={handleFormSubmit}
             />
           ) : (
-            <>{profile.bio}</>
+            <>{profile?.bio}</>
           )}
         </Grid.Column>
       </Grid>
