@@ -26,13 +26,13 @@ export default class ProfileStore {
       const profile = await agent.Profiles.get(username);
       runInAction(() => {
         this.profile = profile;
-      })
-    } catch (error) {       
+      });
+    } catch (error) {
       console.log(error);
     } finally {
       runInAction(() => {
         this.loadingProfile = false;
-      })
+      });
     }
   };
 
@@ -43,11 +43,11 @@ export default class ProfileStore {
         this.profile!.displayName = about.displayName;
         this.profile!.bio = about.bio;
         store.userStore.user!.displayName = about.displayName;
-      })
+      });
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   uploadPhoto = async (file: Blob) => {
     this.uploadingPhoto = true;
@@ -62,15 +62,15 @@ export default class ProfileStore {
             this.profile.image = photo.url;
           }
         }
-      })
+      });
     } catch (error) {
       console.log(error);
     } finally {
       runInAction(() => {
         this.uploadingPhoto = false;
-      })
+      });
     }
-  }
+  };
 
   setMainPhoto = async (photo: Photo) => {
     this.loading = true;
@@ -79,35 +79,35 @@ export default class ProfileStore {
       store.userStore.setImage(photo.url);
       runInAction(() => {
         if (this.profile && this.profile.photos) {
-          this.profile.photos?.forEach(p => p.isMain = false);
-          this.profile.photos!.find(p => p.id === photo.id)!.isMain = true;
+          this.profile.photos?.forEach((p) => (p.isMain = false));
+          this.profile.photos!.find((p) => p.id === photo.id)!.isMain = true;
           this.profile.image = photo.url;
         }
-      })
+      });
     } catch (error) {
       console.log(error);
     } finally {
       runInAction(() => {
         this.loading = false;
-      })
+      });
     }
-  }
-  
+  };
+
   deletePhoto = async (id: string) => {
     this.loading = true;
     try {
       await agent.Profiles.deletePhoto(id);
       runInAction(() => {
         if (this.profile && this.profile.photos) {
-          this.profile.photos = this.profile.photos.filter(p => p.id !== id);
+          this.profile.photos = this.profile.photos.filter((p) => p.id !== id);
         }
-      })
+      });
     } catch (error) {
       console.log(error);
     } finally {
       runInAction(() => {
         this.loading = false;
-      })
+      });
     }
-  }
+  };
 }

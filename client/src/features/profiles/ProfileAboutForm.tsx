@@ -27,8 +27,8 @@ const ProfileAboutForm = ({ about, onFormSubmit }: Props) => {
           <MyTextInput placeholder="Display Name" name="displayName" />
           <MyTextArea placeholder="Add your bio" name="bio" rows={8} />
           <Button
+            positive
             floated="right"
-            color="green"
             content="Update profile"
             type="submit"
             loading={isSubmitting}

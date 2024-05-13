@@ -14,10 +14,6 @@ const ProfileAbout = ({ profile }: Props) => {
   const { profileStore } = useStore();
   const { isCurrentUser, updateAbout } = profileStore;
 
-  const handleCancelEdit = () => {
-    setEditMode(false);
-  };
-
   const handleFormSubmit = async (values: AboutFormValues) => {
     await updateAbout(values);
     setEditMode(false);
@@ -32,20 +28,14 @@ const ProfileAbout = ({ profile }: Props) => {
             icon="user"
             content={`About ${profile?.displayName}`}
           />
-          {isCurrentUser &&
-            (editMode ? (
-              <Button
-                content="Cancel"
-                floated="right"
-                onClick={handleCancelEdit}
-              />
-            ) : (
-              <Button
-                content="Edit Profile"
-                floated="right"
-                onClick={() => setEditMode(true)}
-              />
-            ))}
+          {isCurrentUser && (
+            <Button
+              content={editMode ? "Cancel" : "Edit Profile"}
+              floated="right"
+              onClick={() => setEditMode(!editMode)}
+              basic
+            />
+          )}
         </Grid.Column>
         <Grid.Column width={16}>
           {editMode ? (
@@ -54,7 +44,7 @@ const ProfileAbout = ({ profile }: Props) => {
               onFormSubmit={handleFormSubmit}
             />
           ) : (
-            <p style={{ whiteSpace: "pre-wrap" }}>{profile?.bio}</p>
+            <span style={{ whiteSpace: "pre-wrap" }}>{profile?.bio}</span>
           )}
         </Grid.Column>
       </Grid>
