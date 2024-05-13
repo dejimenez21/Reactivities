@@ -11,15 +11,15 @@ interface Props {
 
 const ProfileAbout = ({ profile }: Props) => {
   const [editMode, setEditMode] = useState(false);
-  const {profileStore} = useStore();
-  const {isCurrentUser} = profileStore;
+  const { profileStore } = useStore();
+  const { isCurrentUser, updateAbout } = profileStore;
 
   const handleCancelEdit = () => {
     setEditMode(false);
   };
 
-  const handleFormSubmit = (values: AboutFormValues) => {
-    console.log(values);
+  const handleFormSubmit = async (values: AboutFormValues) => {
+    await updateAbout(values);
     setEditMode(false);
   };
 
@@ -32,19 +32,20 @@ const ProfileAbout = ({ profile }: Props) => {
             icon="user"
             content={`About ${profile.displayName}`}
           />
-          {isCurrentUser && (editMode ? (
-            <Button
-              content="Cancel"
-              floated="right"
-              onClick={handleCancelEdit}
-            />
-          ) : (
-            <Button
-              content="Edit Profile"
-              floated="right"
-              onClick={() => setEditMode(true)}
-            />
-          ))}
+          {isCurrentUser &&
+            (editMode ? (
+              <Button
+                content="Cancel"
+                floated="right"
+                onClick={handleCancelEdit}
+              />
+            ) : (
+              <Button
+                content="Edit Profile"
+                floated="right"
+                onClick={() => setEditMode(true)}
+              />
+            ))}
         </Grid.Column>
         <Grid.Column width={16}>
           {editMode ? (
