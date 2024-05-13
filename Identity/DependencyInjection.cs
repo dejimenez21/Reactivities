@@ -1,5 +1,6 @@
 ﻿using Identity.Model;
 using Identity.Services;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public static class DependencyInjection
             opt.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<IdentityContext>();
+
+        services.AddMediatR(typeof(IdentityContext).Assembly);
 
         services.AddScoped<TokenService>();
         services.AddScoped<AccountService>();

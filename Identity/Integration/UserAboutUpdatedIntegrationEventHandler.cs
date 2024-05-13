@@ -14,7 +14,6 @@ internal class UserAboutUpdatedIntegrationEventHandler : INotificationHandler<Us
     }
     public async Task Handle(UserAboutUpdatedIntegrationEvent notification, CancellationToken cancellationToken)
     {
-        //TODO: Try event handler failure
         try
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == notification.UserId);
