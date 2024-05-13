@@ -10,8 +10,8 @@ interface Props {
 function ProfileCard({profile}: Props) {
 
     const truncateBio = (bio?: string) => {
-        if(bio && bio.length > 40) {
-            const cropped = bio.substring(0, 40);
+        if(bio && bio.length > 36) {
+            const cropped = bio.substring(0, 36);
             return cropped + '...';
         }
         return bio;
