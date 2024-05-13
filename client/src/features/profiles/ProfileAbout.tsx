@@ -54,7 +54,7 @@ const ProfileAbout = ({ profile }: Props) => {
               onFormSubmit={handleFormSubmit}
             />
           ) : (
-            <>{profile?.bio}</>
+            <p style={{ whiteSpace: "pre-wrap" }}>{profile?.bio}</p>
           )}
         </Grid.Column>
       </Grid>
