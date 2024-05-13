@@ -4,7 +4,7 @@ import { Activity, ActivityFormValues } from "../models/activity";
 import { router } from "../router/Routes";
 import { store } from "../stores/store";
 import { User, UserFormValues } from "../models/user";
-import { Photo, Profile } from "../models/profile";
+import { AboutFormValues, Photo, Profile } from "../models/profile";
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -93,6 +93,7 @@ const Account = {
 
 const Profiles = {
   get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+  updateAbout: (about: AboutFormValues) => requests.put('/profiles/about', about),
   uploadPhoto: (file: Blob) => {
     const formData = new FormData();
     formData.append("file", file);

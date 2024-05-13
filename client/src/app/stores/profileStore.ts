@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { Photo, Profile } from "../models/profile";
+import { AboutFormValues, Photo, Profile } from "../models/profile";
 import agent from "../api/agent";
 import { store } from "./store";
 
@@ -35,6 +35,18 @@ export default class ProfileStore {
       })
     }
   };
+
+  updateAbout = async (about: AboutFormValues) => {
+    try {
+      await agent.Profiles.updateAbout(about);
+      runInAction(() => {
+        this.profile!.displayName = about.displayName;
+        this.profile!.bio = about.bio;
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   uploadPhoto = async (file: Blob) => {
     this.uploadingPhoto = true;
