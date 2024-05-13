@@ -47,7 +47,7 @@ public class AccountService
             return error;
         }
 
-        await _mediator.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.Bio, user.DisplayName));
+        await _mediator.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.DisplayName));
 
         return new UserDto(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
     }

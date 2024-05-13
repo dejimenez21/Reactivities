@@ -28,7 +28,7 @@ public class Seed
             var result = await userManager.CreateAsync(user, "Passw0rd");
             if (result.Succeeded)
             {
-                await publisher.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.Bio, user.DisplayName));
+                await publisher.Publish(new UserCreatedIntegrationEvent(user.Id, user.UserName, user.Email, user.DisplayName));
                 createdUsersIds.Add(user.Id);
             }
         }
