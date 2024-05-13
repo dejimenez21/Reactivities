@@ -4,5 +4,5 @@ namespace Application.Activities;
 
 public interface IHostOnlyActivityCommand<T> : IRequest<T>
 {
-    public Guid ActivityId { get; set; }
+    public Guid ActivityId { get; init; }
 }

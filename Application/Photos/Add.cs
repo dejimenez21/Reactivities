@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Exceptions;
 using Application.Interfaces;
 using Domain;
 using MediatR;
@@ -10,10 +11,7 @@ namespace Application.Photos;
 
 public class Add
 {
-    public class Command : IRequest<Result<Photo>>
-    {
-        public IFormFile File { get; set; }
-    }
+    public record Command(IFormFile File) : IRequest<Result<Photo>> { }
 
     public class Handler : IRequestHandler<Command, Result<Photo>>
     {
@@ -30,13 +28,16 @@ public class Add
 
         public async Task<Result<Photo>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var user = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == _userContext.UserName);
-            if (user is null)
-                return null;
+            var user = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == _userContext.UserName) ?? throw new UserContextUserNotFoundException(_userContext.UserName);
 
-            var photoUploadResult = await _photoAccessor.AddPhoto(request.File);
+            var result = await _photoAccessor.AddPhoto(request.File);
+            if (!result.IsSuccess)
+            {
+                return Result<Photo>.Failure(result.Error!);
+            }
 
-            //Try when no photo
+            var photoUploadResult = result.Value!;
+
             var photo = new Photo
             {
                 Url = photoUploadResult.Url,
@@ -50,15 +51,14 @@ public class Add
 
             user.Photos.Add(photo);
 
-            var result = await _context.SaveChangesAsync() > 0;
+            var success = await _context.SaveChangesAsync() > 0;
 
-            if (!result)
+            if (!success)
             {
                 return Result<Photo>.Failure("Problem adding photo");
             }
 
             return Result<Photo>.Success(photo);
-
         }
     }
 }

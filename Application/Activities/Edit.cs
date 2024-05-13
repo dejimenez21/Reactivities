@@ -9,10 +9,8 @@ namespace Application.Activities
 {
     public class Edit
     {
-        public class Command : IHostOnlyActivityCommand<Result<ActivityDto>>
+        public record Command(Activity Activity, Guid ActivityId) : IHostOnlyActivityCommand<Result<ActivityDto>>
         {
-            public Activity Activity { get; set; }
-            public Guid ActivityId { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -38,7 +36,7 @@ namespace Application.Activities
             {
                 var activity = await _context.Activities.FindAsync(request.Activity.Id);
 
-                if (activity == null) return null;
+                if (activity == null) return null!;
 
                 _mapper.Map(request.Activity, activity);
 

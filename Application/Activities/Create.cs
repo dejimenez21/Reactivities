@@ -11,9 +11,8 @@ namespace Application.Activities;
 
 public class Create
 {
-    public class Command : IRequest<Result<ActivityDto>>
+    public record Command(Activity Activity) : IRequest<Result<ActivityDto>>
     {
-        public Activity Activity { get; set; }
     }
 
     public class CommandValidator : AbstractValidator<Command>
@@ -42,7 +41,7 @@ public class Create
 
             request.Activity.Attendees.Add(new ActivityAttendee
             {
-                AppUser = user,
+                AppUser = user!,
                 IsHost = true
             });
 

@@ -1,4 +1,4 @@
-
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 using Application.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +9,10 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
-    private IMediator _mediator;
+    private ISender _sender;
 
-    protected IMediator Mediator => _mediator ??= 
-        HttpContext.RequestServices.GetService<IMediator>();
+    protected ISender Sender => _sender ??= 
+        HttpContext.RequestServices.GetRequiredService<ISender>();
 
     protected ActionResult HandleResult<T>(Result<T> result)
     {

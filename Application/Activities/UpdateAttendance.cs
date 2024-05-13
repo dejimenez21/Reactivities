@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Exceptions;
 using Application.Interfaces;
 using Domain;
 using MediatR;
@@ -9,10 +10,7 @@ namespace Application.Activities;
 
 public class UpdateAttendance
 {
-    public class Command : IRequest<Result<Unit>>
-    {
-        public Guid ActivityId { get; set; }
-    }
+    public record Command(Guid ActivityId) : IRequest<Result<Unit>> { }
 
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
@@ -32,11 +30,9 @@ public class UpdateAttendance
                 .ThenInclude(a => a.AppUser)
                 .FirstOrDefaultAsync(a => a.Id == request.ActivityId);
 
-            if (activity is null) return null;
+            if (activity is null) return null!;
 
-            var user = await _dbContext.AppUsers.FirstOrDefaultAsync(u => u.UserName == _userContext.UserName);
-
-            if (user is null) return null;
+            var user = await _dbContext.AppUsers.FirstOrDefaultAsync(u => u.UserName == _userContext.UserName, cancellationToken) ?? throw new UserContextUserNotFoundException(_userContext.UserName);
 
             var attendance = activity.Attendees.FirstOrDefault(a => a.AppUserId == user.Id);
 

@@ -7,10 +7,7 @@ namespace Application.Photos;
 
 public class GetMain
 {
-    public class Query : IRequest<string?>
-    {
-        public string Username { get; set; }
-    }
+    public record Query(string Username) : IRequest<string?> { }
 
     public class Handler : IRequestHandler<Query, string?>
     {

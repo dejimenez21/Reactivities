@@ -9,10 +9,7 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<Result<ActivityDto?>>
-        {
-            public Guid Id { get; set; }
-        }
+        public record Query(Guid Id) : IRequest<Result<ActivityDto?>> { }
 
         public class Handler : IRequestHandler<Query, Result<ActivityDto?>>
         {

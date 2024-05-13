@@ -66,7 +66,7 @@ public class AccountService
             return InvalidCredentialsError();
         }
 
-        var image = await _mediator.Send(new GetMain.Query { Username = user.UserName! });
+        var image = await _mediator.Send(new GetMain.Query(user.UserName!));
 
         return new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), image);
     }
@@ -81,7 +81,7 @@ public class AccountService
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null) return null;
 
-        var image = await _mediator.Send(new GetMain.Query { Username = user.UserName! });
+        var image = await _mediator.Send(new GetMain.Query(user.UserName!));
 
         return new UserDto(user.UserName!, user.DisplayName, _tokenService.CreateToken(user), image);
     }

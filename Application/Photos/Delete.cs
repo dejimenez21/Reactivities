@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Exceptions;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,7 @@ namespace Application.Photos;
 
 public class Delete
 {
-    public class Command : IRequest<Result<Unit>>
-    {
-        public string Id { get; set; }
-    }
+    public record Command(string Id) : IRequest<Result<Unit>> { }
 
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
@@ -27,18 +25,17 @@ public class Delete
         }
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var user = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == _userContext.UserName);
-            if (user is null)  return null;
+            var user = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == _userContext.UserName) ?? throw new UserContextUserNotFoundException(_userContext.UserName);
 
             var photo = user.Photos.FirstOrDefault(x => x.Id == request.Id);
 
-            if (photo is null) return null;
+            if (photo is null) return null!;
 
             if (photo.IsMain) return Result<Unit>.Failure("You cannot delete your main photo");
 
             var result = await _photoAccessor.DeletePhoto(photo.Id);
 
-            if (result is null) return Result<Unit>.Failure("Problem deleting photo from cloudinary");
+            if (!result) return Result<Unit>.Failure("Problem deleting photo from cloudinary");
 
             user.Photos.Remove(photo);
 

@@ -9,10 +9,7 @@ namespace Application.Profiles;
 
 public class Details
 {
-    public class Query : IRequest<Result<Profile>>
-    {
-        public string Username { get; set; }
-    }
+    public record Query(string Username) : IRequest<Result<Profile>> { }
 
     public class Handler : IRequestHandler<Query, Result<Profile>>
     {
@@ -33,7 +30,7 @@ public class Details
 
             if (user is null)
             {
-                return null;
+                return null!;
             }
 
             return Result<Profile>.Success(user);

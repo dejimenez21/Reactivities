@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Exceptions;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,7 @@ namespace Application.Photos;
 
 public class SetMain
 {
-    public class Command : IRequest<Result<Unit>>
-    {
-        public string Id { get; set; }
-    }
+    public record Command(string Id) : IRequest<Result<Unit>> { }
 
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
@@ -25,16 +23,12 @@ public class SetMain
         }
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var user = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == _userContext.UserName);
-            if (user is null)
-            {
-                return null;
-            }
+            var user = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(x => x.UserName == _userContext.UserName) ?? throw new UserContextUserNotFoundException(_userContext.UserName);
 
             var photo = user.Photos.FirstOrDefault(x => x.Id == request.Id);
             if (photo is null)
             {
-                return null;
+                return null!;
             }
 
             var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
@@ -48,7 +42,7 @@ public class SetMain
 
             var success = await _context.SaveChangesAsync() > 0;
 
-            if(!success)
+            if (!success)
             {
                 return Result<Unit>.Failure("Problem setting main photo");
             }

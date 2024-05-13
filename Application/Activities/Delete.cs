@@ -6,10 +6,7 @@ namespace Application.Activities
 {
     public class Delete
     {
-        public class Command : IHostOnlyActivityCommand<Result<Unit>>
-        {
-            public Guid ActivityId { get; set; }
-        }
+        public record Command(Guid ActivityId) : IHostOnlyActivityCommand<Result<Unit>> { }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
@@ -22,7 +19,7 @@ namespace Application.Activities
             {
                 var activity = await _context.Activities.FindAsync(request.ActivityId);
 
-                if(activity == null) return null;
+                if (activity == null) return null!;
 
                 _context.Activities.Remove(activity);
 

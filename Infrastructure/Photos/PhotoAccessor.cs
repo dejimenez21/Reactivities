@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Core;
+using Application.Interfaces;
 using Application.Photos;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -16,7 +17,7 @@ public class PhotoAccessor : IPhotoAccessor
         var account = new Account(config.Value.CloudName, config.Value.ApiKey, config.Value.ApiSecret);
         _cloudinary = new Cloudinary(account);
     }
-    public async Task<PhotoUploadResult> AddPhoto(IFormFile file)
+    public async Task<Result<PhotoUploadResult>> AddPhoto(IFormFile file)
     {
         if (file.Length > 0)
         {
@@ -40,13 +41,18 @@ public class PhotoAccessor : IPhotoAccessor
             };
         }
 
-        return null;
+        return Result<PhotoUploadResult>.Failure("File is empty");
     }
 
-    public async Task<string> DeletePhoto(string publicId)
+    /// <summary>
+    /// Try to delete photo from cloudinary given a public Id
+    /// </summary>
+    /// <param name="publicId">The public Id of the photo</param>
+    /// <returns>A boolean value indicating if the photo was deleted successfully</returns>
+    public async Task<bool> DeletePhoto(string publicId)
     {
         var deleteParams = new DeletionParams(publicId);
         var result = await _cloudinary.DestroyAsync(deleteParams);
-        return result.Result == "ok" ? result.Result : null;
+        return result.Result == "ok";
     }
 }

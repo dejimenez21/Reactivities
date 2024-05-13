@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+using Domain;
 
 namespace Application.Profiles;
 
