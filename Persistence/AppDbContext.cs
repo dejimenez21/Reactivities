@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
     public DbSet<Photo> Photos { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
 
 #pragma warning disable CS8618
@@ -30,5 +31,10 @@ public class AppDbContext : DbContext
             .HasOne(aa => aa.Activity)
             .WithMany(a => a.Attendees)
             .HasForeignKey(aa => aa.ActivityId);
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(a => a.Activity)
+            .WithMany(a => a.Comments)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
