@@ -24,6 +24,7 @@ public static class ApplicationServicesExtensions
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<Create>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(IsHostAuthorizationBehavior<,>));
+        services.AddSignalR();
         return services;
     }
 

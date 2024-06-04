@@ -1,6 +1,7 @@
 using Api.Extensions;
 using Api.Middlewares;
 using Api.Services;
+using Api.SignalR;
 using Application.Interfaces;
 using Identity;
 using Infrastructure;
@@ -46,6 +47,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<CommentsHub>("/comments");
 
 await app.InitializeDatabase();
 
