@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240516235746_CommentEntityAdded")]
+    [Migration("20240606205122_CommentEntityAdded")]
     partial class CommentEntityAdded
     {
         /// <inheritdoc />
@@ -179,7 +179,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Comment", b =>
                 {
-                    b.HasOne("Domain.Activity", "Activity")
+                    b.HasOne("Domain.Activity", null)
                         .WithMany("Comments")
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -190,8 +190,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Activity");
 
                     b.Navigation("Author");
                 });

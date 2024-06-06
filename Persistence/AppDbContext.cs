@@ -32,9 +32,9 @@ public class AppDbContext : DbContext
             .WithMany(a => a.Attendees)
             .HasForeignKey(aa => aa.ActivityId);
 
-        modelBuilder.Entity<Comment>()
-            .HasOne(a => a.Activity)
-            .WithMany(a => a.Comments)
+        modelBuilder.Entity<Activity>()
+            .HasMany(a => a.Comments)
+            .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

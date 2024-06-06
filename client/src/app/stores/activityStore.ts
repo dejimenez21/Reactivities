@@ -80,11 +80,6 @@ export default class ActivityStore {
     }
   };
 
-  // private reloadActivity = async (id: string) => {
-  //   this.activityRegistry.delete(id);
-  //   this.loadActivity(id);
-  // };
-
   private setActivity = (activity: Activity) => {
     const user = store.userStore.user;
     if (user) {
@@ -163,5 +158,9 @@ export default class ActivityStore {
 
   cancelActivityToggle = async () => {
     await this.updateAttendance();
+  }
+
+  clearSelectedActivity = () => {
+    this.selectedActivity = undefined;
   }
 }

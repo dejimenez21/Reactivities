@@ -17,7 +17,7 @@ public static class ApplicationServicesExtensions
         services = ConfigureDbContexts(services, config, env);
 
         services.AddCors(options =>
-            options.AddPolicy("CorsPolicy", policy => policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader()));
+            options.AddPolicy("CorsPolicy", policy => policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
         services.AddMediatR(typeof(List.Handler).Assembly);
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);

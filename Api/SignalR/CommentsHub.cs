@@ -1,7 +1,6 @@
 ﻿using Application.Comments;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using System.Runtime.CompilerServices;
 
 namespace Api.SignalR;
 

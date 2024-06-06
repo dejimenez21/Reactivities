@@ -26,7 +26,7 @@ public class List
         {
             var comments = await _dbContext.Comments
                 .Where(x => x.ActivityId == request.ActivityId)
-                .OrderBy(x => x.CreatedAt)
+                .OrderByDescending(x => x.CreatedAt)
                 .ProjectTo<CommentDto>(_mapper.ConfigurationProvider)    
                 .ToListAsync();
 
