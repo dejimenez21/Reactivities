@@ -10,17 +10,18 @@ public class AppDbContext : DbContext
     public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
     public DbSet<Photo> Photos { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<UserFollowing> UserFollowings { get; set; }
 
 
 #pragma warning disable CS8618
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<ActivityAttendee>()
-            .HasKey(aa => new {aa.AppUserId, aa.ActivityId});
+            .HasKey(aa => new { aa.AppUserId, aa.ActivityId });
 
         modelBuilder.Entity<ActivityAttendee>()
             .HasOne(aa => aa.AppUser)
@@ -36,5 +37,20 @@ public class AppDbContext : DbContext
             .HasMany(a => a.Comments)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserFollowing>(b =>
+        {
+            b.HasKey(x => new { x.ObserverId, x.TargetId });
+
+            b.HasOne(x => x.Target)
+            .WithMany(a => a.Followers)
+            .HasForeignKey(x => x.TargetId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(x => x.Observer)
+            .WithMany(a => a.Followings)
+            .HasForeignKey(x => x.ObserverId)
+            .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
